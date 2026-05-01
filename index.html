@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Surprise</title>
+    <!-- Google Icons Library -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #ff4d6d;
+            --light-pink: #fff0f3;
+            --dark-text: #4a0e0e;
+            --icon-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--light-pink);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--dark-text);
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page { display: none; animation: fadeIn 0.4s ease-out; flex-grow: 1; }
+        .page.active { display: flex; flex-direction: column; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-family: 'Georgia', serif; font-size: 1.8rem; margin-bottom: 20px; font-weight: 500; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:hover { background: #fafafa; transform: scale(1.02); border-color: #ddd; }
+
+        .material-icons-outlined { font-size: 32px; color: var(--icon-color); margin-bottom: 12px; }
+
+        .card-text { font-size: 0.95rem; color: var(--dark-text); font-weight: 400; }
+
+        .btn {
+            background: var(--pink);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .scroll-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            max-height: 350px;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            background: #fdfdfd;
+            text-align: left;
+        }
+
+        .reasons-list { 
+            line-height: 1.8; 
+            font-size: 0.95rem; 
+            color: #555;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .reasons-list div {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .reasons-list div::before {
+            content: "•";
+            color: var(--pink);
+            font-weight: bold;
+            display: inline-block; 
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .memories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .memories-grid img {
+            width: 100%;
+            border-radius: 15px;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+
+        .back-btn {
+            background: none;
+            border: 1px solid #ddd;
+            color: #777;
+            padding: 8px 25px;
+            border-radius: 50px;
+            margin-top: 15px;
+            cursor: pointer;
+            align-self: center;
+        }
+
+        #special-icon-container {
+            font-size: 48px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background Music -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+    <div id="page-menu" class="page active">
+        <h1>Choose an envelope</h1>
+        <p style="color: #888; font-size: 0.9rem;">Explore the little things I love about us.</p>
+        <div class="grid">
+            <div class="card" onclick="showPage('page-memories')">
+                <span class="material-icons-outlined">image</span>
+                <span class="card-text">Our Memories</span>
+            </div>
+            <div class="card" onclick="showPage('page-letter')">
+                <span class="material-icons-outlined">mail</span>
+                <span class="card-text">My Letter</span>
+            </div>
+            <div class="card" onclick="showPage('page-reasons')">
+                <span class="material-icons-outlined">favorite_border</span>
+                <span class="card-text">Why I Love You</span>
+            </div>
+            <div class="card" onclick="showPage('page-date')">
+                <span class="material-icons-outlined">event</span>
+                <span class="card-text">Date Night?</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMORIES -->
+    <div id="page-memories" class="page">
+        <h1>Our Best Moments</h1>
+        <div class="scroll-box">
+            <div class="memories-grid">
+                <img src="https://lh3.googleusercontent.com/d/1lBfV1QEecU1q2906a_Vfzrgijyy6D3xN">
+                <img src="https://lh3.googleusercontent.com/d/1b_0wBFE1zq4LSJpbJTyvpR1-r8T718nE">
+                <img src="https://lh3.googleusercontent.com/d/1r4ntRKEqZCtnhcxb128GUU_AGuAhSEMn">
+                <img src="https://lh3.googleusercontent.com/d/14U-ZNcA6SUpN298R1Vu_WwJ72lfUNTom">
+                <img src="https://lh3.googleusercontent.com/d/1luxVuwXoFo7kNw6yCxt5WbeWj_G_emba">
+                <img src="https://lh3.googleusercontent.com/d/1vQh_2UGAP-KfANcFuNpZEv8HPLeUEVcV">
+                <img src="https://lh3.googleusercontent.com/d/1iqnRQCSkpU16kycsCDQDnIXVWrfSNm-J">
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('page-menu')">Back</button>
+    </div>
+
+    <!-- LETTER -->
+    <div id="page-letter" class="page">
+        <h1><b>hey Simran!</b></h1>
+        <div class="scroll-box">
+            <div style="padding: 10px; line-height: 1.8;">
+                <b style="color: #333;">Dearest Simran,</b><br><br>
+                In the quiet of our togetherness, the world fades away. Your presence is my peace, a gentle rhythm that calms my soul. Let’s just be, forever anchored in this love.
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('page-menu')">Back</button>
+    </div>
+
+    <!-- REASONS -->
+    <div id="page-reasons" class="page">
+        <h1>Why I Love You</h1>
+        <div class="scroll-box">
+            <div class="reasons-list">
+                <div>You don’t walk away when things get difficult.</div>
+                <div>You handle my loudest moods with a quiet heart.</div>
+                <div>You choose to forgive instead of holding a grudge.</div>
+                <div>You make me want to learn how to control my temper.</div>
+                <div>You are always there to listen, even when I’m venting.</div>
+                <div>You are the anchor that keeps me from drifting too far.</div>
+                <div>You make me believe true love exists.</div>
+                <div>You make boring moments special.</div>
+                <div>You’ve seen my worst and still love me.</div>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showPage('page-menu')">Back</button>
+    </div>
+
+    <!-- DATE NIGHT -->
+    <div id="page-date" class="page">
+        <h1><b>SIMRAN?</b></h1>
+        <p>I have a special plan for us...</p>
+        <div id="special-icon-container">
+            <span class="material-icons-outlined" style="font-size:inherit;">bed</span>
+            <span class="material-icons-outlined" style="font-size:inherit;">wine_bar</span>
+        </div>
+        <h3 style="font-weight:400; margin-bottom:5px;">Room date</h3>
+        <p  style="margin-top:0; color:#666;">Ready for some quality time together on 11th May !</p>
+        <button class="btn" onclick="alert('Yay! Perfect ❤️')">yes i'am ready </button><br>
+        <button class="back-btn" onclick="showPage('page-menu')">Back</button>
+    </div>
+</div>
+
+<script>
+    const audio = document.getElementById("bgMusic");
+
+    function startMusic() {
+        audio.play().catch(e => console.log("Music waiting for interaction"));
+        document.removeEventListener('click', startMusic);
+        document.removeEventListener('touchstart', startMusic);
+    }
+
+    document.addEventListener('click', startMusic);
+    document.addEventListener('touchstart', startMusic);
+
+    function showPage(pageId) {
+        startMusic(); 
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
