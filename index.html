@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine Surprise</title>
+    <title>Valentine Surprise | Secured</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
         :root {
@@ -102,6 +102,25 @@
 
         h1 { font-family: 'Georgia', serif; font-size: 1.8rem; margin-bottom: 20px; font-weight: 500; color: var(--pink); }
         
+        /* --- NEW: LOCK SCREEN STYLES --- */
+        .pin-input {
+            width: 60%;
+            padding: 15px;
+            font-size: 28px;
+            text-align: center;
+            letter-spacing: 15px;
+            border: 2px solid var(--pink);
+            border-radius: 15px;
+            margin: 20px auto;
+            outline: none;
+            color: var(--dark-text);
+            font-family: monospace;
+            background: #fffafa;
+            transition: 0.3s;
+        }
+        .pin-input:focus { box-shadow: 0 0 15px rgba(255,0,84,0.2); }
+        #pin-error { color: #d62828; font-size: 0.85rem; font-weight: bold; display: none; margin-bottom: 15px; }
+
         /* --- PREMIUM TIMER BANNER --- */
         .timer-banner {
             background: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 100%);
@@ -150,15 +169,9 @@
             border: 2px solid #ffe5ec; border-radius: 15px; background: #fffafa; text-align: left;
         }
 
-        /* --- VERTICAL SCROLL MEMORIES (Fixed & Reverted) --- */
         .memories-grid img, .memories-grid iframe {
-            width: 100%;
-            border-radius: 15px;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
-            box-sizing: border-box;
-            display: block; /* Ensures they stack perfectly */
+            width: 100%; border-radius: 15px; border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; box-sizing: border-box; display: block;
         }
 
         .reasons-list div { margin-bottom: 10px; display: flex; align-items: flex-start; padding: 5px; }
@@ -181,7 +194,6 @@
         }
         .custom-textarea:focus { border-color: var(--pink); box-shadow: 0 0 10px rgba(255, 0, 84, 0.1); }
 
-        /* --- EMERGENCY MODAL --- */
         #emergency-modal {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 999;
@@ -192,7 +204,6 @@
             text-align: center; box-shadow: 0 15px 40px rgba(255, 0, 84, 0.2); border: 2px solid var(--pink);
         }
 
-        /* --- DODGE BUTTON WRAPPER --- */
         #dodge-wrapper { position: relative; height: 50px; width: 100%; margin-top: 10px; }
         #dodgeBtn { position: absolute; left: 0; right: 0; margin: 0 auto; width: 100%; transition: top 0.2s ease, left 0.2s ease; z-index: 10; }
 
@@ -206,7 +217,7 @@
 
 <div class="container">
 
-    <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()">
+    <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleMenu()" style="display: none;">
         <span class="material-icons-outlined">menu</span>
     </div>
     <div id="nav-dropdown" class="dropdown-menu">
@@ -216,22 +227,29 @@
         <div onclick="showPage('page-reasons'); toggleMenu()"><span class="material-icons-outlined">favorite</span> Reasons</div>
         <div onclick="showPage('page-date'); toggleMenu()"><span class="material-icons-outlined">event</span> Date Night</div>
         <div onclick="showPage('page-message'); toggleMenu()"><span class="material-icons-outlined">chat_bubble</span> Your Message</div>
-        
         <div onclick="openEmergencyModal(); toggleMenu()" style="border-top: 1px solid #f0f0f0; margin-top: 5px; color: var(--pink);">
             <span class="material-icons-outlined">campaign</span> Emergency 🚨
         </div>
     </div>
 
-    <div id="page-menu" class="page active">
-        <h1 style="margin-top: 10px; font-size: 1.6rem;">Choose an envelope</h1>
+    <div id="page-lock" class="page active" style="justify-content: center;">
+        <span class="material-icons-outlined" style="font-size: 60px; color: var(--pink); margin-bottom: 10px;">lock</span>
+        <h1 style="margin-bottom: 5px;">Security Check</h1>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px; padding: 0 15px;">Enter the 4-digit secret PIN to unlock your envelope.</p>
+        <p style="color: var(--pink); font-size: 0.75rem; font-style: italic;">(Hint: The date we started, DDMM)</p>
         
+        <input type="password" id="securityPin" class="pin-input" maxlength="4" placeholder="••••">
+        <p id="pin-error">Incorrect PIN! Try again 💔</p>
+        
+        <button class="btn" onclick="checkUnlock()">Unlock App 🔓</button>
+    </div>
+
+    <div id="page-menu" class="page">
+        <h1 style="margin-top: 10px; font-size: 1.6rem;">Choose an envelope</h1>
         <div class="timer-banner">
             <p>Time you've survived my temper:</p>
-            <div class="timer-display" id="live-timer">
-                Loading...
-            </div>
+            <div class="timer-display" id="live-timer">Loading...</div>
         </div>
-
         <div class="grid">
             <div class="card" onclick="showPage('page-memories')"><span class="material-icons-outlined">image</span><span class="card-text">Our Memories</span></div>
             <div class="card" onclick="showPage('page-letter')"><span class="material-icons-outlined">mail</span><span class="card-text">My Letter</span></div>
@@ -255,7 +273,6 @@
                 <img src="https://lh3.googleusercontent.com/d/1luxVuwXoFo7kNw6yCxt5WbeWj_G_emba" loading="lazy">
                 <img src="https://lh3.googleusercontent.com/d/1vQh_2UGAP-KfANcFuNpZEv8HPLeUEVcV" loading="lazy">
                 <img src="https://lh3.googleusercontent.com/d/1iqnRQCSkpU16kycsCDQDnIXVWrfSNm-J" loading="lazy">
-                
                 <p style="margin: 15px 0 5px 0; font-weight: bold; color: var(--pink);">Special Video</p>
                 <iframe src="https://drive.google.com/file/d/16x1gceuklw-cQHK7MKKHyerN5xh-eH9Q/preview" height="200" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>
             </div>
@@ -299,8 +316,8 @@
             <span class="material-icons-outlined" style="font-size:inherit;">bed</span>
             <span class="material-icons-outlined" style="font-size:inherit;">wine_bar</span>
         </div>
-        <h3 id="plan-title" style="font-weight:bold; color: var(--pink);">room date</h3>
-        <p style="margin-top:0; color:#444;">let's go spent time on room for quality</p>
+        <h3 id="plan-title" style="font-weight:bold; color: var(--pink);">sarobar lake meet</h3>
+        <p style="margin-top:0; color:#444;">Ready for some quality time together on 11th May!</p>
         
         <button class="btn" onclick="sendResponse('Yes! Ready ❤️', this)">yes i'am ready</button>
         <button class="btn" style="background: linear-gradient(to right, #ffb703, #fb8500);" onclick="sendResponse('Maybe later 🍕', this)">maybe later</button>
@@ -324,8 +341,8 @@
         <div class="emergency-box">
             <span class="material-icons-outlined" style="font-size: 50px; color: var(--pink);">favorite</span>
             <h2 style="color: var(--pink); margin-top: 10px;">I'm Sorry! 🥺</h2>
-            <p style="color: #444; font-size: 0.95rem; line-height: 1.5;"> tor uporei to rag dekhabo bolo karon hak to sudhu amari ache bolo sorry sorry jaannu</p>
-            <button class="btn" onclick="sendEmergencyResponse(this)"> i love you too ❤️</button>
+            <p style="color: #444; font-size: 0.95rem; line-height: 1.5;">If I'm being stupid, angry, or annoying right now... just know I love you and I'm really grateful for your patience.</p>
+            <button class="btn" onclick="sendEmergencyResponse(this)">Forgive Me ❤️</button>
             <button class="back-btn" onclick="closeEmergencyModal()" style="width: 100%; border:none; text-decoration:underline;">Cancel</button>
         </div>
     </div>
@@ -336,18 +353,30 @@
     const audio = document.getElementById("bgMusic");
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwcBTXc7FxBZf43yIDKODenQT3o95QARZPfNBpCiWM4OQu9bcoIZSXfDtUd6ON9dAts/exec';
 
-    // Safe Music Logic
-    function startMusic() {
-        if(audio) audio.play().catch(e => console.log("Music waiting"));
-        document.removeEventListener('click', startMusic);
-        document.removeEventListener('touchstart', startMusic);
+    // --- LOCK SCREEN LOGIC ---
+    function checkUnlock() {
+        const pinInput = document.getElementById('securityPin').value;
+        const errorText = document.getElementById('pin-error');
+        
+        // BHAi, PIN YAHAN CHANGE KAR SAKTA HAI TUNE "0110" LIKHA HAI
+        if(pinInput === "0110") {
+            errorText.style.display = "none";
+            document.getElementById('page-lock').classList.remove('active');
+            document.getElementById('page-menu').classList.add('active');
+            
+            // Hamburger menu tabhi dikhega jab unlock hoga
+            document.getElementById('hamburgerBtn').style.display = 'flex';
+            
+            // Unlock hote hi gaana bajna start ho jayega!
+            if(audio) audio.play().catch(e => console.log("Audio requires interaction"));
+        } else {
+            errorText.style.display = "block";
+            document.getElementById('securityPin').value = ""; // Clear input on error
+        }
     }
-    document.addEventListener('click', startMusic);
-    document.addEventListener('touchstart', startMusic);
 
-    // Page Logic
+    // Page Navigation
     function showPage(pageId) {
-        startMusic(); 
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const targetPage = document.getElementById(pageId);
         if(targetPage) targetPage.classList.add('active');
@@ -356,16 +385,14 @@
         if(menu && menu.classList.contains('show')) menu.classList.remove('show');
     }
 
+    // Menu Toggle & Outside Click
     function toggleMenu() { 
         const menu = document.getElementById('nav-dropdown');
         if(menu) menu.classList.toggle('show'); 
     }
-
-    // CLOSE MENU ON OUTSIDE CLICK/TOUCH
     function closeMenuOnOutsideClick(event) {
         const menu = document.getElementById('nav-dropdown');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
-        
         if (menu && menu.classList.contains('show')) {
             if (!menu.contains(event.target) && !hamburgerBtn.contains(event.target)) {
                 menu.classList.remove('show');
@@ -375,7 +402,7 @@
     document.addEventListener('click', closeMenuOnOutsideClick);
     document.addEventListener('touchstart', closeMenuOnOutsideClick, { passive: true });
 
-    // Modal Logic Safely
+    // Modal Logic
     function openEmergencyModal() {
         const modal = document.getElementById('emergency-modal');
         if(modal) modal.style.display = 'flex';
@@ -385,13 +412,12 @@
         if(modal) modal.style.display = 'none';
     }
 
-    // 100% Safe Timer
+    // Timer Logic
     try {
-        const startDate = new Date("2025/10/01 00:00:00").getTime(); // Safari safe format
+        const startDate = new Date("2025/10/01 00:00:00").getTime(); 
         setInterval(() => {
             const timerDiv = document.getElementById("live-timer");
             if (!timerDiv) return;
-
             const distance = new Date().getTime() - startDate;
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -405,7 +431,7 @@
         }, 1000);
     } catch(err) { console.log("Timer error prevented crash"); }
 
-    // Safe Dodging Button
+    // Dodging Button
     const dodgeBtn = document.getElementById('dodgeBtn');
     const wrapper = document.getElementById('dodge-wrapper');
     if (dodgeBtn && wrapper) {
@@ -416,13 +442,10 @@
             dodgeBtn.style.top = randomY + 'px';
         }
         dodgeBtn.addEventListener('mouseover', moveButton);
-        dodgeBtn.addEventListener('touchstart', function(e) { 
-            e.preventDefault(); 
-            moveButton(); 
-        }, { passive: false }); 
+        dodgeBtn.addEventListener('touchstart', function(e) { e.preventDefault(); moveButton(); }, { passive: false }); 
     }
 
-    // Google Sheets API - Safe Execution
+    // Google Sheets API
     function safeFetch(postData, btnElement, successMsg, originalText) {
         btnElement.innerText = "Sending...";
         btnElement.disabled = true;
@@ -455,9 +478,7 @@
     function submitCustomMessage(btnElement) {
         const messageBox = document.getElementById('userCustomMessage');
         const messageText = messageBox ? messageBox.value.trim() : "";
-        
         if (messageText === "") { alert("Pehle kuch likho toh! 😅"); return; }
-        
         safeFetch({ 'event_name': 'Custom Message', 'user_response': messageText }, btnElement, 'Message sent successfully! ❤️', btnElement.innerText);
         if(messageBox) messageBox.value = "";
     }
