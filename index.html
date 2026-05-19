@@ -11,6 +11,7 @@
             --light-pink: #ffe5ec;
             --dark-text: #2b2d42;
             --icon-color: #333;
+            --gold: #ffb703;
         }
 
         body {
@@ -102,21 +103,11 @@
 
         h1 { font-family: 'Georgia', serif; font-size: 1.8rem; margin-bottom: 20px; font-weight: 500; color: var(--pink); }
         
-        /* --- NEW: LOCK SCREEN STYLES --- */
+        /* --- LOCK SCREEN STYLES --- */
         .pin-input {
-            width: 60%;
-            padding: 15px;
-            font-size: 28px;
-            text-align: center;
-            letter-spacing: 15px;
-            border: 2px solid var(--pink);
-            border-radius: 15px;
-            margin: 20px auto;
-            outline: none;
-            color: var(--dark-text);
-            font-family: monospace;
-            background: #fffafa;
-            transition: 0.3s;
+            width: 60%; padding: 15px; font-size: 28px; text-align: center; letter-spacing: 15px;
+            border: 2px solid var(--pink); border-radius: 15px; margin: 20px auto; outline: none;
+            color: var(--dark-text); font-family: monospace; background: #fffafa; transition: 0.3s;
         }
         .pin-input:focus { box-shadow: 0 0 15px rgba(255,0,84,0.2); }
         #pin-error { color: #d62828; font-size: 0.85rem; font-weight: bold; display: none; margin-bottom: 15px; }
@@ -124,11 +115,8 @@
         /* --- PREMIUM TIMER BANNER --- */
         .timer-banner {
             background: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 100%);
-            padding: 15px 10px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(255, 0, 84, 0.05);
-            border: 1px solid rgba(255, 0, 84, 0.1);
+            padding: 15px 10px; border-radius: 20px; margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 0, 84, 0.05); border: 1px solid rgba(255, 0, 84, 0.1);
         }
         .timer-banner p { margin: 0 0 10px 0; font-size: 0.8rem; color: #555; font-weight: 600; }
         .timer-display { display: flex; justify-content: center; gap: 8px; }
@@ -194,6 +182,7 @@
         }
         .custom-textarea:focus { border-color: var(--pink); box-shadow: 0 0 10px rgba(255, 0, 84, 0.1); }
 
+        /* --- EMERGENCY MODAL --- */
         #emergency-modal {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(5px); z-index: 999;
@@ -206,6 +195,33 @@
 
         #dodge-wrapper { position: relative; height: 50px; width: 100%; margin-top: 10px; }
         #dodgeBtn { position: absolute; left: 0; right: 0; margin: 0 auto; width: 100%; transition: top 0.2s ease, left 0.2s ease; z-index: 10; }
+
+        /* --- NEW: ANNIVERSARY CELEBRATION OVERLAY --- */
+        #anniversary-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffb3c6 100%); z-index: 500;
+            flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box; animation: fadeIn 0.5s ease;
+        }
+        .anniversary-card {
+            background: white; padding: 30px 20px; border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(255, 0, 84, 0.2); border: 3px solid var(--gold);
+            animation: bounceIn 1s ease; text-align: center; width: 85%;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .floating-heart {
+            position: absolute; color: var(--pink); opacity: 0.6;
+            animation: floatUp 4s infinite linear; font-size: 24px; pointer-events: none;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(550px) translateX(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-50px) translateX(50px) scale(1.2); opacity: 0; }
+        }
 
     </style>
 </head>
@@ -347,35 +363,32 @@
         </div>
     </div>
 
+    <div id="anniversary-overlay">
+        <div class="anniversary-card">
+            <span class="material-icons-outlined" style="font-size: 50px; color: var(--gold); animation: pulse 1s infinite alternate;">workspace_premium</span>
+            <h1 style="margin-top: 10px; color: var(--pink); font-size: 1.6rem; font-family: 'Georgia', serif;">Happy 1st Anniversary!<br><span style="color: var(--dark-text); font-size: 1.4rem;">Simran ❤️</span></h1>
+            <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">We made it through 365 days of laughter, fights, and my terrible temper. Thank you for staying by my side. Here is to forever! 🥂</p>
+            <button class="btn" onclick="closeAnniversaryCelebration()">Open Our Envelopes 💌</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
     const audio = document.getElementById("bgMusic");
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwcBTXc7FxBZf43yIDKODenQT3o95QARZPfNBpCiWM4OQu9bcoIZSXfDtUd6ON9dAts/exec';
+    let totalDaysElapsed = 0;
 
-    // --- LOCK SCREEN LOGIC ---
-    function checkUnlock() {
-        const pinInput = document.getElementById('securityPin').value;
-        const errorText = document.getElementById('pin-error');
-        
-        // BHAi, PIN YAHAN CHANGE KAR SAKTA HAI TUNE "0110" LIKHA HAI
-        if(pinInput === "0110") {
-            errorText.style.display = "none";
-            document.getElementById('page-lock').classList.remove('active');
-            document.getElementById('page-menu').classList.add('active');
-            
-            // Hamburger menu tabhi dikhega jab unlock hoga
-            document.getElementById('hamburgerBtn').style.display = 'flex';
-            
-            // Unlock hote hi gaana bajna start ho jayega!
-            if(audio) audio.play().catch(e => console.log("Audio requires interaction"));
-        } else {
-            errorText.style.display = "block";
-            document.getElementById('securityPin').value = ""; // Clear input on error
-        }
+    // Safe Music Logic
+    function startMusic() {
+        if(audio) audio.play().catch(e => console.log("Music waiting"));
+        document.removeEventListener('click', startMusic);
+        document.removeEventListener('touchstart', startMusic);
     }
+    document.addEventListener('click', startMusic);
+    document.addEventListener('touchstart', startMusic);
 
-    // Page Navigation
+    // Page Logic
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const targetPage = document.getElementById(pageId);
@@ -385,11 +398,12 @@
         if(menu && menu.classList.contains('show')) menu.classList.remove('show');
     }
 
-    // Menu Toggle & Outside Click
     function toggleMenu() { 
         const menu = document.getElementById('nav-dropdown');
         if(menu) menu.classList.toggle('show'); 
     }
+
+    // CLOSE MENU ON OUTSIDE CLICK/TOUCH
     function closeMenuOnOutsideClick(event) {
         const menu = document.getElementById('nav-dropdown');
         const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -402,7 +416,7 @@
     document.addEventListener('click', closeMenuOnOutsideClick);
     document.addEventListener('touchstart', closeMenuOnOutsideClick, { passive: true });
 
-    // Modal Logic
+    // Modal Logic Safely
     function openEmergencyModal() {
         const modal = document.getElementById('emergency-modal');
         if(modal) modal.style.display = 'flex';
@@ -412,18 +426,66 @@
         if(modal) modal.style.display = 'none';
     }
 
-    // Timer Logic
+    // NEW: ANNIVERSARY OVERLAY ACTIONS
+    function triggerAnniversaryCelebration() {
+        const overlay = document.getElementById('anniversary-overlay');
+        if(!overlay) return;
+        overlay.style.display = 'flex';
+        
+        // Generate random floating hearts via JS
+        for(let i=0; i<15; i++) {
+            let heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 320 + 'px';
+            heart.style.animationDelay = (Math.random() * 3) + 's';
+            overlay.appendChild(heart);
+        }
+    }
+    function closeAnniversaryCelebration() {
+        const overlay = document.getElementById('anniversary-overlay');
+        if(overlay) overlay.style.display = 'none';
+    }
+
+    // --- LOCK SCREEN LOGIC ---
+    function checkUnlock() {
+        const pinInput = document.getElementById('securityPin').value;
+        const errorText = document.getElementById('pin-error');
+        
+        if(pinInput === "0110") {
+            errorText.style.display = "none";
+            document.getElementById('page-lock').classList.remove('active');
+            document.getElementById('page-menu').classList.add('active');
+            document.getElementById('hamburgerBtn').style.display = 'flex';
+            
+            if(audio) audio.play().catch(e => console.log("Audio trigger interaction handled"));
+
+            // AUTOMATIC CHECK FOR 365 DAYS ON UNLOCK
+            // TESTING NOTE: Agar abhi check karna hai toh niche totalDaysElapsed >= 365 ko totalDaysElapsed >= 0 kar ke save kar lo.
+            if(totalDaysElapsed >= 365) {
+                triggerAnniversaryCelebration();
+            }
+        } else {
+            errorText.style.display = "block";
+            document.getElementById('securityPin').value = ""; 
+        }
+    }
+
+    // 100% Safe Timer
     try {
-        const startDate = new Date("2025/10/01 00:00:00").getTime(); 
+        const startDate = new Date("2025/10/01 00:00:00").getTime(); // Safari safe format
         setInterval(() => {
             const timerDiv = document.getElementById("live-timer");
             if (!timerDiv) return;
+
             const distance = new Date().getTime() - startDate;
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
+            totalDaysElapsed = days; // Update global tracking variable
+
             timerDiv.innerHTML = '<div class="time-box"><span class="time-val">' + days + '</span><span class="time-label">Days</span></div>' +
                                  '<div class="time-box"><span class="time-val">' + hours + '</span><span class="time-label">Hrs</span></div>' +
                                  '<div class="time-box"><span class="time-val">' + minutes + '</span><span class="time-label">Mins</span></div>' +
@@ -431,7 +493,7 @@
         }, 1000);
     } catch(err) { console.log("Timer error prevented crash"); }
 
-    // Dodging Button
+    // Safe Dodging Button
     const dodgeBtn = document.getElementById('dodgeBtn');
     const wrapper = document.getElementById('dodge-wrapper');
     if (dodgeBtn && wrapper) {
@@ -445,7 +507,7 @@
         dodgeBtn.addEventListener('touchstart', function(e) { e.preventDefault(); moveButton(); }, { passive: false }); 
     }
 
-    // Google Sheets API
+    // Google Sheets API - Safe Execution
     function safeFetch(postData, btnElement, successMsg, originalText) {
         btnElement.innerText = "Sending...";
         btnElement.disabled = true;
