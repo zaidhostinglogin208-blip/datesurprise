@@ -157,6 +157,7 @@
             border: 2px solid #ffe5ec; border-radius: 15px; background: #fffafa; text-align: left;
         }
 
+        /* --- VERTICAL SCROLL MEMORIES GRID --- */
         .memories-grid img, .memories-grid iframe {
             width: 100%; border-radius: 15px; border: 3px solid white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; box-sizing: border-box; display: block;
@@ -196,7 +197,7 @@
         #dodge-wrapper { position: relative; height: 50px; width: 100%; margin-top: 10px; }
         #dodgeBtn { position: absolute; left: 0; right: 0; margin: 0 auto; width: 100%; transition: top 0.2s ease, left 0.2s ease; z-index: 10; }
 
-        /* --- NEW: ANNIVERSARY CELEBRATION OVERLAY --- */
+        /* --- ANNIVERSARY CELEBRATION OVERLAY --- */
         #anniversary-overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #ffe5ec 0%, #ffb3c6 100%); z-index: 500;
@@ -282,15 +283,15 @@
         <h1 style="margin-top: 10px;">Our Best Moments</h1>
         <div class="scroll-box">
             <div class="memories-grid">
-                <img src="https://lh3.googleusercontent.com/d/1lBfV1QEecU1q2906a_Vfzrgijyy6D3xN" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/1b_0wBFE1zq4LSJpbJTyvpR1-r8T718nE" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/1r4ntRKEqZCtnhcxb128GUU_AGuAhSEMn" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/14U-ZNcA6SUpN298R1Vu_WwJ72lfUNTom" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/1luxVuwXoFo7kNw6yCxt5WbeWj_G_emba" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/1vQh_2UGAP-KfANcFuNpZEv8HPLeUEVcV" loading="lazy">
-                <img src="https://lh3.googleusercontent.com/d/1iqnRQCSkpU16kycsCDQDnIXVWrfSNm-J" loading="lazy">
+                <img src="images/0.jpg">
+                <img src="images/1.jpg">
+                <img src="images/2.jpg">
+                <img src="images/3.jpg">
+                <img src="images/4.jpg">
+                <img src="images/5.jpg">
+                <img src="images/6.jpg">
                 <p style="margin: 15px 0 5px 0; font-weight: bold; color: var(--pink);">Special Video</p>
-                <iframe src="https://drive.google.com/file/d/16x1gceuklw-cQHK7MKKHyerN5xh-eH9Q/preview" height="200" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>
+                <iframe src="https://drive.google.com/file/d/16x1gceuklw-cQHK7MKKHyerN5xh-eH9Q/preview" height="200" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
         <button class="back-btn" onclick="showPage('page-menu')">Back</button>
@@ -362,10 +363,10 @@
             <button class="back-btn" onclick="closeEmergencyModal()" style="width: 100%; border:none; text-decoration:underline;">Cancel</button>
         </div>
     </div>
-         // aniversiry note change
+
     <div id="anniversary-overlay">
         <div class="anniversary-card">
-            <span class="material-icons-outlined" style="font-size: 50px; color: var(--gold); animation: pulse 1s infinite alternate;">workspace_premium</span>
+            <span class="material-icons-outlined" style="font-size: 50px; color: var(--gold);">workspace_premium</span>
             <h1 style="margin-top: 10px; color: var(--pink); font-size: 1.6rem; font-family: 'Georgia', serif;">Happy 1st Anniversary!<br><span style="color: var(--dark-text); font-size: 1.4rem;">Simran ❤️</span></h1>
             <p style="color: #555; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px;">We made it through 365 days of laughter, fights, and my terrible temper. Thank you for staying by my side. Here is to forever! 🥂</p>
             <button class="btn" onclick="closeAnniversaryCelebration()">Open Our Envelopes 💌</button>
@@ -378,15 +379,6 @@
     const audio = document.getElementById("bgMusic");
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwcBTXc7FxBZf43yIDKODenQT3o95QARZPfNBpCiWM4OQu9bcoIZSXfDtUd6ON9dAts/exec';
     let totalDaysElapsed = 0;
-
-    // Safe Music Logic
-    function startMusic() {
-        if(audio) audio.play().catch(e => console.log("Music waiting"));
-        document.removeEventListener('click', startMusic);
-        document.removeEventListener('touchstart', startMusic);
-    }
-    document.addEventListener('click', startMusic);
-    document.addEventListener('touchstart', startMusic);
 
     // Page Logic
     function showPage(pageId) {
@@ -426,13 +418,12 @@
         if(modal) modal.style.display = 'none';
     }
 
-    // NEW: ANNIVERSARY OVERLAY ACTIONS
+    // ANNIVERSARY OVERLAY ACTIONS
     function triggerAnniversaryCelebration() {
         const overlay = document.getElementById('anniversary-overlay');
         if(!overlay) return;
         overlay.style.display = 'flex';
         
-        // Generate random floating hearts via JS
         for(let i=0; i<15; i++) {
             let heart = document.createElement('div');
             heart.className = 'floating-heart';
@@ -447,7 +438,7 @@
         if(overlay) overlay.style.display = 'none';
     }
 
-    // --- LOCK SCREEN LOGIC ---
+    // --- LOCK SCREEN LOGIC WITH EXCLUSIVE AUDIO START ---
     function checkUnlock() {
         const pinInput = document.getElementById('securityPin').value;
         const errorText = document.getElementById('pin-error');
@@ -458,11 +449,12 @@
             document.getElementById('page-menu').classList.add('active');
             document.getElementById('hamburgerBtn').style.display = 'flex';
             
-            if(audio) audio.play().catch(e => console.log("Audio trigger interaction handled"));
+            // GAANA AB SIRF YAHAN SE HII CHALEGA!
+            if(audio) audio.play().catch(e => console.log("Audio trigger error handled safely"));
 
-            // AUTOMATIC CHECK FOR 365 DAYS ON UNLOCK
-            // TESTING NOTE: Agar abhi check karna hai toh niche totalDaysElapsed >= 365 ko totalDaysElapsed >= 0 kar ke save kar lo.
-            if(totalDaysElapsed >= 365) {
+            // CURRENT TESTING: Set to >= 0 so you can check instantly. 
+            // Final deployment logic: Change '0' to '365' to auto-trigger on exact 1st October 2026.
+            if(totalDaysElapsed >= 0) {
                 triggerAnniversaryCelebration();
             }
         } else {
@@ -473,7 +465,7 @@
 
     // 100% Safe Timer
     try {
-        const startDate = new Date("2025/10/01 00:00:00").getTime(); // Safari safe format
+        const startDate = new Date("2025/10/01 00:00:00").getTime(); 
         setInterval(() => {
             const timerDiv = document.getElementById("live-timer");
             if (!timerDiv) return;
@@ -484,7 +476,7 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            totalDaysElapsed = days; // Update global tracking variable
+            totalDaysElapsed = days; 
 
             timerDiv.innerHTML = '<div class="time-box"><span class="time-val">' + days + '</span><span class="time-label">Days</span></div>' +
                                  '<div class="time-box"><span class="time-val">' + hours + '</span><span class="time-label">Hrs</span></div>' +
