@@ -266,6 +266,7 @@
         <div class="timer-banner">
             <p>Time you've survived my temper:</p>
             <div class="timer-display" id="live-timer">Loading...</div>
+            <button class="btn" id="freezeBtn" onclick="freezeTimer()" style="margin-top: 12px; background: linear-gradient(to right, #00b4d8, #0077b6); font-size: 0.8rem; padding: 8px 18px; border-radius: 20px;">Freeze Our Moment ❄️</button>
         </div>
         <div class="grid">
             <div class="card" onclick="showPage('page-memories')"><span class="material-icons-outlined">image</span><span class="card-text">Our Memories</span></div>
@@ -379,6 +380,7 @@
     const audio = document.getElementById("bgMusic");
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwcBTXc7FxBZf43yIDKODenQT3o95QARZPfNBpCiWM4OQu9bcoIZSXfDtUd6ON9dAts/exec';
     let totalDaysElapsed = 0;
+    let isFrozen = false; // TRACK FREEZE STATUS GLOBAL
 
     // Page Logic
     function showPage(pageId) {
@@ -438,6 +440,17 @@
         if(overlay) overlay.style.display = 'none';
     }
 
+    // FREEZE TIMER SYSTEM FUNCTION
+    function freezeTimer() {
+        isFrozen = true;
+        const btn = document.getElementById('freezeBtn');
+        if(btn) {
+            btn.innerText = "this is end here jaanuu❤️  ALBIDA BUTKI";
+            btn.style.background = "linear-gradient(to right, #b7b7a4, #a3a380)";
+            btn.disabled = true;
+        }
+    }
+
     // --- LOCK SCREEN LOGIC WITH EXCLUSIVE AUDIO START ---
     function checkUnlock() {
         const pinInput = document.getElementById('securityPin').value;
@@ -449,11 +462,8 @@
             document.getElementById('page-menu').classList.add('active');
             document.getElementById('hamburgerBtn').style.display = 'flex';
             
-            // GAANA AB SIRF YAHAN SE HII CHALEGA!
             if(audio) audio.play().catch(e => console.log("Audio trigger error handled safely"));
 
-            // CURRENT TESTING: Set to >= 0 so you can check instantly. 
-            // Final deployment logic: Change '0' to '365' to auto-trigger on exact 1st October 2026.
             if(totalDaysElapsed >= 365) {
                 triggerAnniversaryCelebration();
             }
@@ -463,10 +473,13 @@
         }
     }
 
-    // 100% Safe Timer
+    // 100% Safe Live Timer Loop
     try {
         const startDate = new Date("2025/10/01 00:00:00").getTime(); 
         setInterval(() => {
+            // INTERLOCK CHECK AT TOP OF THE TICK
+            if (isFrozen) return;
+
             const timerDiv = document.getElementById("live-timer");
             if (!timerDiv) return;
 
